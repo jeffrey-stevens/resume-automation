@@ -1,0 +1,143 @@
+{{ name }}
+{{ "\n" -}}
+
+{% for type, info in contact.items() -%}
+    {{ type | capitalize }}: {{ info }}
+{% endfor %}
+
+{{- "\n" -}}
+
+{% for site, url in media.items() -%}
+    {{ site | capitalize }}: {{ url }}
+{% endfor -%}
+{{ "\n" -}}
+{{ "\n" -}}
+
+
+Qualifications
+==============
+
+{{- "\n" -}}
+    {% for qualification in qualifications -%}
+        {{ "\n" -}}
+        {% if qualification is string -%}
+            * {{ qualification }}
+        {% elif qualification is mapping -%}
+            {% for qual, subquals in qualification.items() -%}
+                * {{ qual }}
+                {% for subqual in subquals -%}
+                    {{ "\n" -}}
+                    {{ "  " }}* {{ subqual }}
+                {% endfor -%}
+            {% endfor -%}
+        {% endif -%}
+    {% endfor -%}
+{{ "\n\n" -}}
+
+
+Experience
+==========
+
+{{- "\n" -}}
+{% for job in experience -%}
+    {%- if not loop.first %}
+        {{- "\n" }}
+    {%- endif %}
+    {{ "\n" -}}
+    {{ job.title -}}
+    {{ "\n" -}}
+    {{ job.employer -}}
+    {% if 'location' in job -%}
+        {{ " " }}({{ job.location }})
+    {% else -%}
+        {{ "\n" -}}
+    {% endif -%}
+    {{ job['start-date'] }} -- {{ job['end-date'] -}}
+    {{ "\n" -}}
+
+    {% for accomplishment in job.accomplishments -%}
+        {{ "\n" -}}
+        {% if accomplishment is string -%}
+            {{ "  " }}* {{ accomplishment }}
+        {% elif accomplishment is mapping -%}
+            {% for win, subwins in accomplishment.items() -%}
+                * {{ win }}
+                {% for subwin in subwins -%}
+                    {{ "\n" -}}
+                    {{ "    " }}* {{ subwin }}
+                {% endfor -%}
+            {% endfor -%}
+        {% endif -%}
+    {% endfor -%}
+
+{%  endfor -%}
+{{ "\n\n" -}}
+
+
+Skills
+======
+
+{{- "\n" -}}
+{% for category, groups in skills.items() -%}
+    {{ "\n" -}}
+    {{ category }}:
+    {% for group in groups -%}
+        {% if group is string -%}
+            {{ "  " }}* {{ group | capitalize }}{{ "\n" -}}
+        
+        {%- elif group is mapping -%}
+            {% for group_name, skills_list in group.items() -%}
+                {{ "  * " -}}
+                {% for skill in skills_list -%}
+                    {% set skill_str = skill -%}
+                        {% if loop.first -%}
+                            {% set skill_str = skill_str[0:1] | upper + skill_str[1:] -%}
+                        {% endif -%}
+                    {{ skill_str -}}
+                    {% if not loop.last -%}
+                        {{ ", " -}}
+                    {% endif -%}
+                {% endfor -%}
+                {{ "\n" -}}
+            {% endfor -%}
+
+        {% endif -%}
+    {% endfor -%}
+{% endfor -%}
+{{ "\n\n" -}}
+
+
+Education
+=========
+
+{{- "\n\n" -}}
+{% for edu in education -%}
+    {% if not loop.first -%}
+        {{ "\n" -}}
+    {% endif -%}
+    {{ edu.degree }} {{ edu.major }}{{ "\n" -}}
+    {{ edu.school }}, {{ edu.graduation }}
+    {% if 'gpa' in edu -%}
+        {{ edu.gpa }} GPA
+        {%- if 'honors' in edu -%} 
+            {{ "," }} {{ edu.honors }}
+        {% else -%}
+            {{ "\n" -}}
+        {%- endif -%}
+    {% else -%}
+        {% if 'honors' in edu -%}
+            {{ edu.honors }}
+        {% endif -%}
+    {% endif -%}
+{% endfor -%}
+{{ "\n\n" -}}
+
+
+Certifications
+==============
+
+{{- "\n" -}}
+{% for cert in certifications -%}
+    {{ "\n" -}}
+    {{ cert.certification }}, {{ cert['cert-date'] }}
+{% endfor -%}

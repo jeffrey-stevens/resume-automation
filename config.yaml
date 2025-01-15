@@ -1,0 +1,31 @@
+
+output:
+
+  docx:
+    templates:
+      templates-dir: templates/docx
+      template: templates/docx/template
+      document-template: templates/docx/jinja/document.jinja
+      styles-template: templates/docx/jinja/styles.jinja
+      numbering-template: templates/docx/jinja/numbering.jinja
+    build:
+      build-dir: build/docx
+      archive: build/docx/archive
+      output-file: build/docx/resume.docx
+  
+  text:
+    templates:
+      templates-dir: templates/text
+      template: templates/text/resume.jinja
+    build:
+      build-dir: build/text
+      output-file: build/text/resume.txt
+
+  latex:
+    templates:
+      templates-dir: templates/latex
+      template: templates/latex/resume-template.tex
+    build:
+      build-dir: build/latex
+      tex-output-file: build/latex/resume.tex
+      pdf-output-file: build/latex/resume.pdf

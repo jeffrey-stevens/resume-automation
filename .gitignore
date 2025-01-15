@@ -1,0 +1,13 @@
+*.docx
+~*
+.~*
+*.zip
+build/docx/
+build/text/
+build/latex/
+test/
+resume
+*.git
+
+__pycache__
+venv

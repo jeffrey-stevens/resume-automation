@@ -1,0 +1,354 @@
+<w:p>
+    <w:pPr>
+        <w:pStyle w:val="ResumeName" />
+    </w:pPr>
+    <w:r>
+        <w:t>{{ name }}</w:t>
+    </w:r>
+</w:p>
+
+<w:tbl>
+    <w:tblPr>
+        <w:tblW w:w="9360" w:type="dxa" />
+        <w:tblLayout w:type="fixed" />
+    </w:tblPr>
+    <w:tblGrid>
+        <w:gridCol w:w="4680" />
+        <w:gridCol w:w="4680" />
+    </w:tblGrid>
+
+    <w:tr>
+        <w:tc>
+            <w:tcPr>
+                <w:tcW w:w="4680" w:type="dxa" />
+            </w:tcPr>
+            {%- for info in contact.values() %}
+                <w:p>
+                    <w:pPr>
+                        <w:pStyle w:val="ResumeContactTableLeftColumn" />
+                    </w:pPr>
+                    <w:r>
+                        <w:t>{{ info }}</w:t>
+                    </w:r>
+                </w:p>
+            {%- endfor %}
+        </w:tc>
+
+        <w:tc>
+            <w:tcPr>
+                <w:tcW w:w="4680" w:type="dxa" />
+            </w:tcPr>
+
+            {%- for site, url in media.items() %}
+                <w:p>
+                    <w:pPr>
+                        <w:pStyle w:val="ResumeContactTableRightColumn" />
+                    </w:pPr>
+                    <w:r>
+                        <w:t>{{ site }}:</w:t>
+                    </w:r>
+                    <w:r>
+                        <w:t xml:space="preserve">&#09;</w:t>
+                    </w:r>
+                    <w:r>
+                        <w:t>{{ url }}</w:t>
+                    </w:r>
+                </w:p>
+            {%- endfor %}
+
+        </w:tc>
+
+    </w:tr>
+</w:tbl>
+
+
+<w:p>
+    <w:pPr>
+        <w:pStyle w:val="ResumeSectionHeader" />
+    </w:pPr>
+    <w:r>
+        <w:t>Qualifications</w:t>
+    </w:r>
+</w:p>
+
+{%- for qualification in qualifications %}
+    {%- if qualification is string %}
+        <w:p>
+            <w:pPr>
+                <w:pStyle w:val="ResumeListParagraph" />
+                <w:numPr>
+                    <w:ilvl w:val="0" />
+                    <w:numId w:val="100" />
+                </w:numPr>
+            </w:pPr>
+            <w:r>
+                <w:t xml:space="preserve">{{ qualification }}</w:t>
+            </w:r>
+        </w:p>
+    {%- elif qualification is mapping %}
+        {%- for qual, subquals in qualification.items() %}
+            <w:p>
+                <w:pPr>
+                    <w:pStyle w:val="ResumeListParagraph" />
+                    <w:numPr>
+                        <w:ilvl w:val="0" />
+                        <w:numId w:val="100" />
+                    </w:numPr>
+                </w:pPr>
+                <w:r>
+                    <w:t xml:space="preserve">{{ qual }}</w:t>
+                </w:r>
+            </w:p>
+            {%- for subqual in subquals %}
+                <w:p>
+                    <w:pPr>
+                        <w:pStyle w:val="ResumeListParagraph" />
+                        <w:numPr>
+                            <w:ilvl w:val="1" />
+                            <w:numId w:val="100" />
+                        </w:numPr>
+                    </w:pPr>
+                    <w:r>
+                        <w:t xml:space="preserve">{{ subqual }}</w:t>
+                    </w:r>
+                </w:p>
+            {%- endfor %}
+        {%- endfor %}
+    {%- endif %}
+{%- endfor %}
+
+<w:p>
+    <w:pPr>
+        <w:pStyle w:val="ResumeSectionHeader" />
+    </w:pPr>
+    <w:r>
+        <w:t>Experience</w:t>
+    </w:r>
+</w:p>
+
+{%- for job in experience %}
+    <w:p>
+        <w:pPr>
+            <w:pStyle w:val="ResumeJobHeader" />
+        </w:pPr>
+        <w:r>
+            <w:rPr>
+                <w:rStyle w:val="ResumeJobTitle" />
+            </w:rPr>
+            <w:t xml:space="preserve">{{ job.title }}</w:t>
+        </w:r>
+        <w:r>
+            <w:rPr>
+                <w:rStyle w:val="ResumeJobDates" />
+            </w:rPr>
+            <w:tab />
+            <w:t xml:space="preserve">{{ job['start-date'] }} – {{ job['end-date'] }}</w:t>
+        </w:r>
+    </w:p>
+    <w:p>
+        <w:r>
+            <w:rPr>
+                <w:rStyle w:val="ResumeJobEmployer" />
+            </w:rPr>
+            <w:t xml:space="preserve">{{ job.employer }}</w:t>
+        </w:r>
+        {%- if 'location' in job %}
+            <w:r>
+                <w:rPr>
+                    <w:rStyle w:val="ResumeJobLocation" />
+                </w:rPr>
+                <w:t xml:space="preserve"> ({{ job.location }})</w:t>
+            </w:r>
+        {%- endif %}
+    </w:p>
+
+
+    {%- for accomplishment in job.accomplishments %}
+        {%- if accomplishment is string %}
+            <w:p>
+                <w:pPr>
+                    <w:pStyle w:val="ResumeAccomplishmentsList" />
+                    <w:numPr>
+                        <w:ilvl w:val="0" />
+                        <w:numId w:val="100" />
+                    </w:numPr>
+                </w:pPr>
+                <w:r>
+                    <w:t xml:space="preserve">{{ accomplishment }}</w:t>
+                </w:r>
+            </w:p>
+        {%- elif accomplishment is mapping %}
+            {%- for win, subwins in accomplishment.items() %}
+                <w:p>
+                    <w:pPr>
+                        <w:pStyle w:val="ResumeAccomplishmentsList" />
+                        <w:numPr>
+                            <w:ilvl w:val="0" />
+                            <w:numId w:val="100" />
+                        </w:numPr>
+                    </w:pPr>
+                    <w:r>
+                        <w:t xml:space="preserve">{{ win }}</w:t>
+                    </w:r>
+                </w:p>
+                {%- for subwin in subwins %}
+                    <w:p>
+                        <w:pPr>
+                            <w:pStyle w:val="ResumeAccomplishmentsList" />
+                            <w:numPr>
+                                <w:ilvl w:val="1" />
+                                <w:numId w:val="100" />
+                            </w:numPr>
+                        </w:pPr>
+                        <w:r>
+                            <w:t xml:space="preserve">{{ subwin }}</w:t>
+                        </w:r>
+                    </w:p>
+                {%- endfor %}
+            {%- endfor %}
+        {%- endif %}
+    {%- endfor %}
+
+{%- endfor %}
+
+
+<w:p>
+    <w:pPr>
+        <w:pStyle w:val="ResumeSectionHeader" />
+    </w:pPr>
+    <w:r>
+        <w:t>Skills</w:t>
+    </w:r>
+</w:p>
+
+
+{%- for category, groups in skills.items() %}
+<w:p>
+    <w:pPr>
+        <w:pStyle w:val="ResumeSkillsParagraph" />
+    </w:pPr>
+    <w:r>
+        <w:rPr>
+            <w:rStyle w:val="ResumeSkillsCategory" />
+        </w:rPr>
+        <w:t xml:space="preserve">{{ category }}:  </w:t>
+    </w:r>
+
+    {%- for group in groups %}
+        {%- if group is string %}
+            <w:r>
+                <w:t xml:space="preserve">{{ group | capitalize}}</w:t>
+            </w:r>
+        {%- elif group is mapping %}
+            {%- for group_name, skills_list in group.items() %}
+                {%- for skill in skills_list %}
+                    {%- set skill_str = skill %}
+                    {%- if loop.first %}
+                        {%- set skill_str = skill_str[0:1] | upper + skill_str[1:] %}
+                    {%- endif %}
+                    <w:r>
+                        <w:t xml:space="preserve">{{ skill_str }}</w:t>
+                    </w:r>
+                    {%- if not loop.last %}
+                        <w:r>
+                            <w:t xml:space="preserve">, </w:t>
+                        </w:r>
+                    {%- endif %}
+                {%- endfor %}
+            {%- endfor %}
+        {%- endif %}
+
+        {%- if not loop.last %}
+            <w:r>
+                <w:t xml:space="preserve">  •  </w:t>
+            </w:r>
+        {%- endif %}
+    {%- endfor %}
+
+</w:p>
+{%- endfor %}
+
+
+<w:p>
+    <w:pPr>
+        <w:pStyle w:val="ResumeSectionHeader" />
+    </w:pPr>
+    <w:r>
+        <w:t>Education and Certifications</w:t>
+    </w:r>
+</w:p>
+
+{%- for edu in education %}
+    <w:p>
+        <w:pPr>
+            <w:pStyle w:val="ResumeEducationLine" />
+        </w:pPr>
+        <w:r>
+            <w:rPr>
+                <w:rStyle w:val="ResumeDegree" />
+            </w:rPr>
+            <w:t xml:space="preserve">{{ edu.degree }} {{ edu.major }}</w:t>
+        </w:r>
+        <w:r>
+            <w:t xml:space="preserve">, </w:t>
+        </w:r>
+        <w:r>
+            <w:t xml:space="preserve">{{ edu.school }}</w:t>
+        </w:r>
+        <w:r>
+            <w:t xml:space="preserve">, </w:t>
+        </w:r>
+        <w:r>
+            <w:t xml:space="preserve">{{ edu.graduation }}</w:t>
+        </w:r>
+
+        {%- if 'gpa' in edu or 'honors' in edu %}
+            <w:r>
+                <w:tab />
+            </w:r>
+            {%- if 'gpa' in edu %}
+                <w:r>
+                    <w:t xml:space="preserve">{{ edu.gpa }} GPA</w:t>
+                </w:r>
+            {%- endif %}
+            {%- if 'honors' in edu %}
+                {%- if 'gpa' in edu %}
+                    <w:r>
+                        <w:t xml:space="preserve">, </w:t>
+                    </w:r>
+                {%- endif %}
+                <w:r>
+                    <w:rPr>
+                        <w:rStyle w:val="ResumeDegreeHonors" />
+                    </w:rPr>
+                    <w:t xml:space="preserve">{{ edu.honors }}</w:t>
+                </w:r>
+            {%- endif %}
+        {%- endif %}
+    </w:p>
+{%- endfor %}
+
+
+{%- for cert in certifications %}
+    <w:p>
+        <w:pPr>
+            {%- if loop.first %}
+                <w:pStyle w:val="ResumeEducationGroup" />
+            {%- else %}
+                <w:pStyle w:val="ResumeEducationLine" />
+            {%- endif %}
+        </w:pPr>
+        <w:r>
+            <w:rPr>
+                <w:rStyle w:val="ResumeCertification" />
+            </w:rPr>
+            <w:t xml:space="preserve">{{ cert.certification }}</w:t>
+        </w:r>
+        <w:r>
+            <w:t xml:space="preserve">, </w:t>
+        </w:r>
+        <w:r>
+            <w:t xml:space="preserve">{{ cert['cert-date'] }}</w:t>
+        </w:r>
+    </w:p>
+{%- endfor %}

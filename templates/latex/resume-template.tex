@@ -1,0 +1,250 @@
+\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[letterpaper]{geometry}
+\usepackage{multicol}
+\usepackage[default]{lato}
+\usepackage{xparse}
+\usepackage{parskip}
+\usepackage{enumitem}
+% \usepackage{showframe}
+
+
+\geometry{top=0.5in, bottom=0.5in, left=0.75in, right=0.75in, headheight=0pt, headsep=0pt}
+\pagestyle{empty}
+\linespread{1.2}
+
+
+\newcommand{\sectionheader}[1]{
+    \bigskip
+    \strut \textbf{\large #1}
+    {\hrule height 1pt}
+    \medskip
+}
+
+\newcommand{\jobtitle}[3]{
+    \textbf{#1} \hfill #2 -- #3
+}
+
+\NewDocumentCommand{\employer}{m o}{
+    \textit{#1}%
+    \IfValueTF{#2} { (#2)} {}
+}
+
+\newcommand{\skillcategory}[1]{%
+    \textbf{#1}%
+}
+
+
+\newlist{skillslist}{description}{1}
+\setlist[skillslist, 1]{
+    labelsep=1em,
+    left=0pt,
+    labelwidth=2em,
+    itemsep=0pt,
+    topsep=0pt
+}
+
+
+\newenvironment{personal}{%
+    \renewcommand{\arraystretch}{1.2}
+}
+
+
+\newenvironment{qualifications}{%
+    \raggedright
+    \sectionheader{Qualifications}
+}
+
+
+\newenvironment{experience}{%
+    \raggedright
+    \sectionheader{Experience}
+}
+
+
+\newenvironment{skills}{%
+    \sectionheader{Skills}
+    % \setlength{\parskip}{10em}
+}
+
+
+\newenvironment{education}{%
+    \raggedright
+    \sectionheader{Education and Certifications}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%% Header
+
+\begin{center}
+    \textbf{\huge << name | latexify >>}
+\end{center}
+\smallskip
+{\hrule height 2pt}
+
+
+%% Personal info
+\begin{personal}
+
+    \begin{multicols}{2}
+        % \switchcolumn
+
+        <% if contact -%>
+            \begin{tabular}{l l}
+            <% for type, info in contact.items() -%>
+                \textbf{<< type | capitalize | latexify >>:} & << info >> \\
+            <% endfor -%>
+            \end{tabular}
+        <% endif -%>
+
+        \columnbreak
+
+        <% if media -%>
+            \begin{tabular}{l l}
+            <% for site, url in media.items() -%>
+                \textbf{<< site | capitalize | latexify >>:} & << url >> \\
+            <% endfor -%>
+            \end{tabular}
+        <% endif -%>
+
+    \end{multicols}
+
+    \vspace{-0.8\baselineskip}
+
+\end{personal}
+
+
+%% Qualifications
+
+\begin{qualifications}
+
+    \begin{itemize}
+        <% for qualification in qualifications -%>
+            <% if qualification is string -%>
+                \item << qualification | latexify >>
+            <% elif qualification is mapping -%>
+                <% for qual, subquals in qualification.items() -%>
+                    \item << qual | latexify >>
+                    \begin{itemize}
+                    <% for subqual in subquals -%>
+                        \item << subqual | latexify >>
+                    <% endfor -%>
+                    \end{itemize}
+                <% endfor -%>
+            <% endif -%>
+        <% endfor -%>
+    \end{itemize}
+
+\end{qualifications}
+
+
+%% Experience
+
+\begin{experience}
+
+    <% for job in experience -%>
+        <% if not loop.first -%>
+            \medskip
+        <% endif -%>
+        \jobtitle{<< job.title | latexify >>}{<< job['start-date'] | latexify >>}%
+            {<< job['end-date'] | latexify >>} \\
+        <% if 'location' in job -%>
+            \employer{<< job.employer | latexify >>}[<< job.location | latexify >>]
+        <% else -%>
+            \employer{<< job.employer | latexify >>}
+        <% endif -%>
+
+        <% if job.accomplishments -%>
+            \begin{itemize}
+            <% for accomplishment in job.accomplishments -%>
+                <% if accomplishment is string -%>
+                    \item << accomplishment | latexify >>
+                <% elif accomplishment is mapping -%>
+                    <% for win, subwins in accomplishment.items() -%>
+                        \item << win | latexify >>
+                        \begin{itemize}
+                        <% for subwin in subwins -%>
+                            \item << subwin | latexify >>
+                        <% endfor -%>
+                        \end{itemize}
+                    <% endfor -%>
+                <% endif -%>
+            <% endfor -%>
+            \end{itemize}
+        <% endif -%>
+
+    <%  endfor -%>
+
+\end{experience}
+
+
+\begin{skills}
+
+    \begin{skillslist}
+        <% for category, groups in skills.items() -%>
+            % \skillcategory{<< category | latexify >>}: %
+            \item[<< category | latexify >>:]%
+            <% for group in groups -%>
+                <% if not loop.first -%>
+                \;\;\textbullet\;
+                <% endif -%>
+                <% if group is string -%>
+                    << group | capitalize | latexify ->>
+                <%- elif group is mapping -%>
+                    <% for group_name, skills_list in group.items() -%>
+                        <% for skill in skills_list -%>
+                            <% set skill_str = skill -%>
+                                <% if loop.first -%>
+                                    <% set skill_str = skill_str[0:1] | upper + skill_str[1:] -%>
+                                <% endif -%>
+                            << skill_str | latexify ->>
+                            <% if not loop.last -%>
+                                , %
+                            <% endif -%>
+                        <% endfor -%>
+                    <% endfor -%>
+                <% endif -%>
+            <% endfor -%>
+        <% endfor -%>
+    \end{skillslist}
+
+\end{skills}
+
+
+\begin{education}
+
+    <% for edu in education -%>
+        \textbf{<< edu.degree | latexify >> << edu.major | latexify >>}, %
+        << edu.school | latexify >>, << edu.graduation | latexify >>
+        <% if 'gpa' in edu -%>
+            \hfill
+            << edu.gpa | latexify >> GPA
+            <%- if 'honors' in edu -%> 
+                , \textit{<< edu.honors | latexify >>}
+            <% else -%>
+                \\
+            <%- endif -%>
+        <% else -%>
+            <% if 'honors' in edu -%>
+                \hfill
+                \textit{<< edu.honors | latexify >>}
+            <% endif -%>
+        <% endif -%>
+        \\
+    <% endfor -%>
+
+    \medskip
+
+    <% for cert in certifications -%>
+        \textbf{<< cert.certification >>}, << cert['cert-date'] | latexify >>
+        \\
+    <% endfor -%>
+
+\end{education}
+
+
+\end{document}
