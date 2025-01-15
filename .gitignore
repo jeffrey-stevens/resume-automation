@@ -2,12 +2,13 @@
 ~*
 .~*
 *.zip
-build/docx/
-build/text/
-build/latex/
+build/docx/*
+build/text/*
+build/latex/*
 test/
 resume
 *.git
+!.gitkeep
 
 __pycache__
 venv
